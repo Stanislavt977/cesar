@@ -1,39 +1,24 @@
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 
-void print_histogram(const char *text) {
-    int counts[26] = {0};
-    int total_letters = 0;
 
-    
-    for (int i = 0; text[i] != '\0'; i++) {
-        if (isalpha(text[i])) {
-            int index = toupper(text[i]) - 'A';
-            counts[index]++;
-            total_letters++;
-        }
+void vigenere_encrypt(const char *plaintext, const char *key, char *output) {
+    int key_len = strlen(key);
+    int key_index = 0;
+    for (int i = 0; plaintext[i] != '\0'; i++) {
+        char p = toupper(plaintext[i]);
+
+        if (isalpha(p)) {
+            char k_char = toupper(key[key_index % key_len]);
+            int shift = k_char - 'A';
+            output[i] = ((p - 'A' + shift) % 26) + 'A';
+            key_index++;
+        } else {
+            output[i] = plaintext[i];
+
+                    }
     }
 
-    
-    printf("\n--- FREQUENCY HISTOGRAM ---\n");
-
-    for (int i = 0; i < 26; i++) {
-        if (counts[i] > 0) {
-            printf("%c (%3d): ", 'A' + i, counts[i]);
-
-            for (int j = 0; j < counts[i]; j++) {
-                printf("*");
-            }
-
-            printf("\n");
-        }
-    }
-}
-int main() {
-    char text[] = "Hello World Cryptography Example";
-
-    print_histogram(text);
-
+    output[strlen(plaintext)] = '\0';
     return 0;
-}
-
