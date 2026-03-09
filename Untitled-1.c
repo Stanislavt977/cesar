@@ -1,29 +1,40 @@
 
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void caesar_decrypt(char *input, char *output, int key) {
+    int len = strlen(input);
+
+    for (int i = 0; i < len; i++) {
+        char c = input[i];
+
+        if (isupper(c)) {
+            output[i] = (c - 'A' - key + 26) % 26 + 'A';
+        } 
+        else {
+            output[i] = c; 
+        }
+    }
+
+    output[len] = '\0';
+}
+void bruteforce_attack(char *cipher) {
+    char buffer[256];
+
+    printf("--- BRUTE FORCE REPORT ---\n");
+
+    for (int k = 1; k < 26; k++) {
+        caesar_decrypt(cipher, buffer, k);
+        printf("[Key %02d] -> %s\n", k, buffer);
+    }
+}
+}
+
 int main() {
-    FILE *in = fopen("input.txt", "rb");
-    if (in == NULL) {
-        printf("Грешка при отваряне на input.txt\n");
-        return 1;
-    }
+    char cipher[] = "YVIBZM VM DOT ZVM ADMO VN D OZVXC D TJP V WPO";
 
-    FILE *out = fopen("encrypted.bin", "wb");
-    if (out == NULL) {
-        printf("Грешка при отваряне на encrypted.bin\n");
-        fclose(in);
-        return 1;
-    }
+    bruteforce_attack(cipher);
 
-    int ch;
-    char key = 'X';
-
-    while ((ch = fgetc(in)) != EOF) {
-        char encrypted = ch ^ key;
-        fputc(encrypted, out);
-    }
-
-    fclose(in);
-    fclose(out);
-
-    printf("Файлът беше успешно криптиран.\n");
     return 0;
 }
